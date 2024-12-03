@@ -1,10 +1,12 @@
 module.exports = {
     development: {
-        client: 'sqlite3',
+        client: 'pg',
         connection: {
-            filename: './sklep.sqlite'
+            host: '127.0.0.1',
+            user: 'user',
+            password: 'admin',
+            database: 'sklepPG'
         },
-        useNullAsDefault: true, // Wymagane dla SQLite
         migrations: {
             directory: './migrations'
         }
