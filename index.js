@@ -5,6 +5,7 @@ const productRoutes = require('./routes/products');
 const orderRoutes = require('./routes/orders');
 const orderStatusRoutes = require('./routes/order_status');
 const categoryRoutes = require('./routes/categories');
+const loginRoutes = require('./routes/login');
 
 const app = express();
 app.use(bodyParser.json());
@@ -14,6 +15,7 @@ app.use('/products', productRoutes);
 app.use('/orders', orderRoutes);
 app.use('/order_status', orderStatusRoutes);
 app.use('/categories', categoryRoutes);
+app.use('/', loginRoutes);
 
 // Start server
 const PORT = 3000;

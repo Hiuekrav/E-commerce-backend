@@ -2,9 +2,13 @@ const express = require('express');
 const router = express.Router();
 const { StatusCodes } = require('http-status-codes');
 const Product = require('../models/Product');
+const passport = require("./passport");
 
 // GET all products
-router.get('/', async (req, res) => {
+router.get('/', passport.authenticate("jwt", { session: false }), async (req, res) => {
+    if (req.user.role==="CLIENT") {
+        return res.status(StatusCodes.FORBIDDEN);
+    }
     const products = await Product.fetchAll({ withRelated: ['category'] });
     res.json(products);
 });
@@ -20,7 +24,8 @@ router.get('/:id', async (req, res) => {
 });
 
 // POST new product
-router.post('/', async (req, res) => {
+router.post('/',  async (req, res) => {
+
     try {
         const product = await new Product(req.body).save();
         res.status(StatusCodes.CREATED).json(product);
@@ -30,7 +35,12 @@ router.post('/', async (req, res) => {
 });
 
 //PUT updated product
-router.put('/:id', async (req, res) => {
+router.put('/:id',passport.authenticate("jwt", { session: false }),  async (req, res) => {
+
+    if (req.user.role==="CLIENT") {
+        return res.status(StatusCodes.FORBIDDEN);
+    }
+
     try {
         const product = await Product.where({ id: req.params.id }).fetch();
         if (!product) {

@@ -4,6 +4,7 @@ const Category = require('../models/Category');
 
 // GET all categories
 router.get('/', async (req, res) => {
+
     const categories = await Category.fetchAll();
     res.json(categories);
 });

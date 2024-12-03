@@ -60,7 +60,7 @@ router.post('/', async (req, res) => {
     const { username, email, phone, items } = req.body;
 
     if (!username || !email || !phone || !Array.isArray(items) || items.length === 0) {
-        return res.status(StatusCodes.NOT_FOUND).json({ error: 'Invalid order data' });
+        return res.status(StatusCodes.BAD_REQUEST).json({ error: 'Invalid request data' });
     }
 
     try {

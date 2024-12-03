@@ -3,7 +3,10 @@
   "version": "1.0.0",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "create-drop-tables": "npx knex migrate:rollback && npx knex migrate:latest",
+    "server": "node index.js",
+    "start": "npm run create-drop-tables && npm run server"
   },
   "keywords": [],
   "author": "",
@@ -14,7 +17,10 @@
     "bookshelf": "^1.2.0",
     "express": "^4.21.1",
     "http-status-codes": "^2.3.0",
-    "knex": "^3.1.0",
+    "js-sha256": "^0.11.0",
+    "jsonwebtoken": "^9.0.2",
+    "passport": "^0.7.0",
+    "passport-jwt": "^4.0.1",
     "sqlite3": "^5.1.7"
   }
 }
