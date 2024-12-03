@@ -11,7 +11,7 @@ const opts = {
 passport.use(
     new Strategy(opts, async (payload, done) => {
         try {
-            const user =  User.where({ email: payload.email }).fetch({ require: false });
+            const user = await User.where({ email: payload.email }).fetch({ require: false });
             if (user) return done(null, user);
         } catch (error) {
             return done(error);

@@ -5,16 +5,24 @@ const User = require('../models/User');
 const Config = require('../config');
 const {sha256} = require("js-sha256");
 const {sign} = require("jsonwebtoken");
+const {body, validationResult} = require("express-validator");
 
-router.post('/login', async (req, res) => {
-    const { username, password } = req.body;
-    if (!username || !password) {
-        return res.status(StatusCodes.BAD_REQUEST).json({ error: 'Invalid request data' });
+router.post('/',
+    [
+    [
+        body("username").notEmpty().withMessage("username is required"),
+        body("password").notEmpty().withMessage("password is required")
+    ],
+    ], async (req, res) => {
+
+    const errors = validationResult(req);
+
+    if (!errors.isEmpty()) {
+        return res.status(400).json({ errors: errors.array() });
     }
 
-    let hashedPassword = sha256(password)
-
-    const user = await User.where({ username: username, password: hashedPassword }).fetch({ require: false });
+    let hashedPassword = sha256(req.body.password)
+    const user = await User.where({ username: req.body.username, password: hashedPassword }).fetch({ require: false });
 
     if (!user) {
         return res.status(StatusCodes.BAD_REQUEST).json({ error: 'Invalid credentials' });
@@ -25,7 +33,7 @@ router.post('/login', async (req, res) => {
         //Creating jwt token
         token = sign(
             {
-                email: user.email
+                email: user.get('email')
             },
             Config.secret,
             { expiresIn: 3000 }

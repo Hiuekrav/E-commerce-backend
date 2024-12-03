@@ -9,9 +9,9 @@ exports.up = async function (knex) {
             table.string('name').notNullable();
             table.text('description').notNullable();
             table.decimal('price', 10, 2).notNullable();
-            // table.check('price > 0');
+            table.check('price > 0');
             table.decimal('weight', 10, 2).notNullable();
-            // table.check('weight > 0');
+            table.check('weight > 0');
             table.integer('category_id').unsigned().references('id').inTable('categories');
         })
         .createTable('order_status', (table) => {
@@ -31,7 +31,7 @@ exports.up = async function (knex) {
             table.integer('order_id').unsigned().references('id').inTable('orders');
             table.integer('product_id').unsigned().references('id').inTable('products');
             table.integer('quantity').notNullable();
-            // table.check('quantity > 0');
+            table.check('quantity > 0');
         })
         .createTable('users', (table) => {
             table.increments('id').primary();
@@ -72,8 +72,8 @@ exports.up = async function (knex) {
             email: 'client@gmail.com',
             phone: '9876543221',
             role: 'CLIENT',
-        },
-    ])
+        }
+    ]);
 };
 
 exports.down = async function (knex) {
