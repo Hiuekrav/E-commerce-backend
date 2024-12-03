@@ -40,6 +40,12 @@ exports.up = async function (knex) {
             table.string('email').unique().notNullable();
             table.string('phone').notNullable();
             table.string('role').notNullable();
+        })
+        .createTable('opinions', (table) => {
+            table.increments('id').primary();
+            table.integer('order_id').unsigned().notNullable().references('id').inTable('orders').onDelete('CASCADE');
+            table.integer('rating').notNullable().checkBetween([1, 5]);
+            table.text('content').notNullable();
         });
 
     // Wstawienie predefiniowanych statusów
@@ -83,5 +89,6 @@ exports.down = async function (knex) {
         .dropTableIfExists('order_status')
         .dropTableIfExists('products')
         .dropTableIfExists('categories')
-        .dropTableIfExists('users');
+        .dropTableIfExists('users')
+        .dropTableIfExists('opinions');
 };

@@ -24,7 +24,7 @@ const PORT = 3000;
 app.listen(PORT, async () => {
     console.log(`Server running on http://localhost:${PORT}`);
     try {
-        //await loadInitData();
+        await loadInitData();
     }
     catch (err) {
         console.error("Error loading init data", err.message);

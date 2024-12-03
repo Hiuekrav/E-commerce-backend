@@ -5,6 +5,7 @@ const Order = require('../models/Order');
 const OrderStatus = require('../models/OrderStatus');
 const OrderItem = require('../models/OrderItem');
 const Product = require('../models/Product');
+const Opinion = require('../models/Opinion');
 const passport = require("./passport");
 const { body, validationResult, param} = require("express-validator");
 
@@ -156,7 +157,8 @@ router.patch('/:id',
     if (invalidTransition) {
         return res.status(StatusCodes.BAD_REQUEST).json({ error: 'Invalid status transition' });
     }
-    let approval_date = null;
+    //todo sprawdzic
+    let approval_date = order.get('approval_date');
     if(newStatus.get('name') === 'APPROVED') {
         approval_date = new Date().toISOString();
     }
@@ -193,5 +195,55 @@ router.get('/status/:id',
     }
     res.json(orders);
 });
+
+//POST add opinion to order
+router.post('/:id/opinions',[
+    [
+        param("id").isNumeric().withMessage("Identifier must be numeric value "),
+        body("rating").notEmpty().isInt({min:1, max:5}).withMessage("Rating must be between 1 and 5"),
+        body("content").notEmpty().withMessage("Content must not be empty")
+    ],
+], passport.authenticate("jwt", {session : false}),
+    async (req, res) => {
+
+    const errors = validationResult(req);
+
+    if (!errors.isEmpty()) {
+        return res.status(400).json({ errors: errors.array() });
+    }
+
+    if (req.user.get("role")!=="CLIENT") {
+        return res.status(StatusCodes.FORBIDDEN).send();
+    }
+
+    const orderId = req.params.id;
+    const {rating, content} = req.body;
+
+    const order = await Order.where({id: orderId}).fetch({require: false, withRelated: ['status']});
+    if (!order || order.length === 0) {
+        return res.status(StatusCodes.NOT_FOUND).json({error: 'Order with provided id not found'});
+    }
+
+    // Sprawdzenie statusu
+    const statusName = order.related('status').get('name');
+    console.log(statusName);
+    if (!['COMPLETED', 'CANCELLED'].includes(statusName.toUpperCase())) {
+        return res.status(StatusCodes.BAD_REQUEST).json({error: 'Opinion can only be added to COMPLETED or CANCELLED orders'});
+    }
+
+    if (req.user.get('username') !== order.get('username')) {
+        return res.status(StatusCodes.FORBIDDEN).json({ error: 'You are not authorized to add an opinion to this order' });
+    }
+
+    // Dodanie opinii
+    const opinion = await new Opinion({
+        order_id: orderId,
+        rating: rating,
+        content: content
+    }).save();
+
+    res.status(StatusCodes.CREATED).json({message: 'Opinion added successfully', opinion});
+});
+
 
 module.exports = router;

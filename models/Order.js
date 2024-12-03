@@ -1,15 +1,16 @@
 const { bookshelf } = require('../db');
-const OrderStatus = require('./OrderStatus');
-const OrderItem = require('./OrderItem');
 
 const Order = bookshelf.model('Order', {
     tableName: 'orders',
     status() {
-        return this.belongsTo(OrderStatus);
+        return this.belongsTo('OrderStatus', 'status_id');
     },
     items() {
-        return this.hasMany(OrderItem);
+        return this.hasMany('OrderItem');
     },
+    opinions() {
+            return this.hasMany('Opinion');
+    }
 });
 
 module.exports = Order;
