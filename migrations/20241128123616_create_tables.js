@@ -84,11 +84,11 @@ exports.up = async function (knex) {
 
 exports.down = async function (knex) {
     await knex.schema
+        .dropTableIfExists('opinions')
         .dropTableIfExists('order_items')
         .dropTableIfExists('orders')
         .dropTableIfExists('order_status')
         .dropTableIfExists('products')
         .dropTableIfExists('categories')
-        .dropTableIfExists('users')
-        .dropTableIfExists('opinions');
+        .dropTableIfExists('users');
 };

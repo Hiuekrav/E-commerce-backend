@@ -79,7 +79,7 @@ router.post('/',
 
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
-        return res.status(400).json({ errors: errors.array() });
+        return res.status(StatusCodes.BAD_REQUEST).json({ errors: errors.array() });
     }
     if (req.user.get("role")!=="CLIENT") {
         return res.status(StatusCodes.FORBIDDEN).send();
@@ -157,7 +157,7 @@ router.patch('/:id',
     if (invalidTransition) {
         return res.status(StatusCodes.BAD_REQUEST).json({ error: 'Invalid status transition' });
     }
-    //todo sprawdzic
+
     let approval_date = order.get('approval_date');
     if(newStatus.get('name') === 'APPROVED') {
         approval_date = new Date().toISOString();
@@ -209,7 +209,7 @@ router.post('/:id/opinions',[
     const errors = validationResult(req);
 
     if (!errors.isEmpty()) {
-        return res.status(400).json({ errors: errors.array() });
+        return res.status(StatusCodes.BAD_REQUEST).json({ errors: errors.array() });
     }
 
     if (req.user.get("role")!=="CLIENT") {
