@@ -48,9 +48,9 @@ This repository contains the backend implementation for an e-commerce platform. 
 3. Clone this repository.
 
 ### Installation
-1. Install dependencies: ***npm install*** (WARNING: if there any errors caused by packages inconsistency run ***yarn install*** instead)
-2. Run database migrations: ***npx knex migrate:latest***
-3. Start the server: ***npm run server***
+1. Install dependencies: ```npm install``` (WARNING: if there any errors caused by packages inconsistency run ```yarn install``` instead)
+2. Run database migrations: ```npx knex migrate:latest```
+3. Start the server: ```npm run server```
 
 Alternatively, the application can be started by extecuting "start" command defined in the package.json file from the user's IDE.
 
